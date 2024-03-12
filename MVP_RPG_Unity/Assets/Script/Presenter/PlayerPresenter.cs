@@ -1,18 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class PlayerPresenter : MonoBehaviour
+using MVRP.Models;
+using MVRP.Views;
+using UniRx;
+namespace MVRP.Presenter
 {
-    // Start is called before the first frame update
-    void Start()
+    public sealed class PlayerPresenter : MonoBehaviour
     {
-        
-    }
+        //  view
+        [SerializeField] private PlayerView _playerView;
+        //  model
+        [SerializeField] private PlayerModel _playerModel;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        private void Start()
+        {
+            // PlayerのHealthを監視
+            _playerModel.Health
+                .Subscribe(x =>
+                {
+                    // Viewに反映
+                    _playerView.SetText((int)x);
+                }).AddTo(this);
+        }
     }
 }
+
